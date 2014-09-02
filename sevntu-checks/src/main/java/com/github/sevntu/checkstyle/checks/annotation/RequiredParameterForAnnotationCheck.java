@@ -24,15 +24,21 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
- * <p>Marks a given parameter as required for a given annotation. This only certify
+ * <p>
+ * Marks a given parameter as required for a given annotation. This only certify
  * the minimal parameters that need to be used on the annotation. For example if
  * you enforce the parameter "description" on @EJB, you are still free to use
- * beanName if you like.</p>
- * <p>Say you want to ensure that the parameter name should be
- * mandatory on a given annotation.</p>
+ * beanName if you like.
+ * </p>
+ * <p>
+ * Say you want to ensure that the parameter name should be mandatory on a given
+ * annotation.
+ * </p>
  * <p/>
  * 
  * <pre>
@@ -53,7 +59,13 @@ public class RequiredParameterForAnnotationCheck extends AnnotationAbstract
     }
 
     private String annotationName;
-    private Set<String> requiredParameters = new HashSet<String>();
+
+    /**
+     * This will be using a LinkedHashSet as it will preserve the order in which
+     * it was added. Otherwise parameter names will be printed on a random order
+     * when going to the log
+     */
+    private Set<String> requiredParameters = new LinkedHashSet<String>();
 
     /** The annotation name we are interested in */
     public void setAnnotationName(String annotationName)
@@ -86,7 +98,9 @@ public class RequiredParameterForAnnotationCheck extends AnnotationAbstract
         if (annotationName.equals(this.annotationName)) {
 
             // cloning the initial hashMap
-            HashSet<String> missingParameters = new HashSet<String>(
+            // it will use a LInkedHashSet as a HashSet has no guarantee of ordering
+            // when printing the parameter names
+            HashSet<String> missingParameters = new LinkedHashSet<String>(
                     requiredParameters);
 
             String names[] = getAnnotationParameters(aAST);
@@ -96,8 +110,7 @@ public class RequiredParameterForAnnotationCheck extends AnnotationAbstract
             }
 
             if (missingParameters.size() != 0) {
-
-                String requiredParametersAsString = Joiner.on(",").join(
+                String requiredParametersAsString = Joiner.on(", ").join(
                         missingParameters);
                 log(aAST, MSG_KEY, this.annotationName,
                         requiredParametersAsString);

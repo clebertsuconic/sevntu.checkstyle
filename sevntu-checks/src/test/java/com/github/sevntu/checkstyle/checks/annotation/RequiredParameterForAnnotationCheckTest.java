@@ -26,44 +26,78 @@ import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
  * @author Clebert Suconic
  */
 
-public class RequiredParameterForAnnotationCheckTest extends BaseCheckTestSupport {
+public class RequiredParameterForAnnotationCheckTest extends BaseCheckTestSupport
+{
 
     @org.junit.Test
-    public void testValidateRequiredParameter() throws Exception {
+    public void testValidateRequiredParameter()
+            throws Exception
+    {
         final DefaultConfiguration checkConfig =
                 createCheckConfig(RequiredParameterForAnnotationCheck.class);
 
         checkConfig.addAttribute("annotationName", "SomeNote");
         checkConfig.addAttribute("requiredParameters", "thename");
 
-
-        final String[] expected = {"14:4: " + getCheckMessage(RequiredParameterForAnnotationCheck.MSG_KEY, "SomeNote", "thename")};
+        final String[] expected = { "14:4: "
+                + getCheckMessage(RequiredParameterForAnnotationCheck.MSG_KEY,
+                        "SomeNote", "thename") };
         verify(checkConfig, getPath("RequiredAnnotation.java"), expected);
     }
 
     @org.junit.Test
-    public void testMultipleProperties() throws Exception {
+    public void testMultipleProperties()
+            throws Exception
+    {
         final DefaultConfiguration checkConfig =
                 createCheckConfig(RequiredParameterForAnnotationCheck.class);
 
         checkConfig.addAttribute("annotationName", "MultipleRequired");
         checkConfig.addAttribute("requiredParameters", "prop1,prop2");
 
-
         final String[] expected = {};
         verify(checkConfig, getPath("RequiredAnnotation.java"), expected);
     }
 
     @org.junit.Test
-    public void testMultiplePropertiesValidateFailure() throws Exception {
+    public void testMultiplePropertiesValidateFailure()
+            throws Exception
+    {
         final DefaultConfiguration checkConfig =
                 createCheckConfig(RequiredParameterForAnnotationCheck.class);
 
         checkConfig.addAttribute("annotationName", "MultipleRequired");
         checkConfig.addAttribute("requiredParameters", "prop1,propDontExist");
 
+        final String[] expected = { "18:4: "
+                + getCheckMessage(RequiredParameterForAnnotationCheck.MSG_KEY,
+                        "MultipleRequired", "propDontExist") };
+        verify(checkConfig, getPath("RequiredAnnotation.java"), expected);
+    }
 
-        final String[] expected = {"18:4: " + getCheckMessage(RequiredParameterForAnnotationCheck.MSG_KEY, "MultipleRequired", "propDontExist")};
+    @org.junit.Test
+    public void testMissingTwoProperties()
+            throws Exception
+    {
+        final DefaultConfiguration checkConfig =
+                createCheckConfig(RequiredParameterForAnnotationCheck.class);
+
+        checkConfig.addAttribute("annotationName", "SomeNote");
+        checkConfig.addAttribute("requiredParameters", "a,b");
+
+        final String[] expected = {
+                "5:4: "
+                        + getCheckMessage(
+                                RequiredParameterForAnnotationCheck.MSG_KEY,
+                                "SomeNote", "a, b"),
+                "10:4: "
+                        + getCheckMessage(
+                                RequiredParameterForAnnotationCheck.MSG_KEY,
+                                "SomeNote", "a, b"),
+                "14:4: "
+                        + getCheckMessage(
+                                RequiredParameterForAnnotationCheck.MSG_KEY,
+                                "SomeNote", "a, b") };
         verify(checkConfig, getPath("RequiredAnnotation.java"), expected);
     }
 
