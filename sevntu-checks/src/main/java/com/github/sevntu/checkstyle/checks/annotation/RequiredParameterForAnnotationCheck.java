@@ -27,11 +27,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Marks a given parameter as required for a give annotation. This only certify
+ * <p>Marks a given parameter as required for a given annotation. This only certify
  * the minimal parameters that need to be used on the annotation. For example if
  * you enforce the parameter "description" on @EJB, you are still free to use
- * beanName if you like Say you want to ensure that the parameter name should be
- * mandatory on a given annotation.
+ * beanName if you like.</p>
+ * <p>Say you want to ensure that the parameter name should be
+ * mandatory on a given annotation.</p>
  * <p/>
  * 
  * <pre>
